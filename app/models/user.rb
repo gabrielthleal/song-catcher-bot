@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   validates_uniqueness_of :telegram_id
-  
+
   def next_bot_command=(command)
     bot_command_data['command'] = command
 

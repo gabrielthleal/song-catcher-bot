@@ -2,6 +2,9 @@
 
 module TelegramBot
   module Command
+    #
+    # <Description>
+    #
     class Start < Base
       def should_start?
         text.match?(%r{\A/start})

@@ -5,6 +5,8 @@ class WebhooksController < ApplicationController
     render(nothing: true, head: :ok)
   end
 
+  private
+
   def webhook
     params[:webhook]
   end

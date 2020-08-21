@@ -3,6 +3,9 @@
 require 'telegram/bot'
 module TelegramBot
   module Command
+    #
+    # <Description>
+    #
     class Base
       attr_reader :user, :message, :api
 
