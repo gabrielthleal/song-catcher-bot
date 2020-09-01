@@ -1,5 +1,5 @@
 # frozen_String_literal: true
-
+require 'net/http'
 module TelegramBot
   module Command
     #
@@ -11,11 +11,9 @@ module TelegramBot
       end
 
       def start
-        send_message('Welcome. Send me a youtube url')
+        send_message('Welcome!')
 
         user.reset_next_bot_command
-
-        user.next_bot_command = 'TelegramBot::Command::Search'
       end
     end
   end
