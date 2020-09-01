@@ -26,7 +26,7 @@ module TelegramBot
 
       protected
 
-      def send_message(text, _options = {})
+      def send_message(text)
         uri = URI("#{TELEGRAM_API_URI}/sendMessage")
         params = { chat_id: @user.telegram_id, text: text }
         uri.query = URI.encode_www_form(params)
