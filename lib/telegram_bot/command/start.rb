@@ -1,5 +1,4 @@
 # frozen_String_literal: true
-
 module TelegramBot
   module Command
     #
@@ -11,11 +10,11 @@ module TelegramBot
       end
 
       def start
-        send_message('Welcome. Send me a youtube url')
+        send_message('Welcome! Send me any song name to add on your spotify playlist')
 
         user.reset_next_bot_command
 
-        user.next_bot_command = 'TelegramBot::Command::Search'
+        user.next_bot_command = 'TelegramBot::Command::CatchSong'
       end
     end
   end

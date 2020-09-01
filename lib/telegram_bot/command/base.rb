@@ -1,19 +1,19 @@
 # frozen_String_literal: true
 
-require 'telegram/bot'
+require 'net/http'
 module TelegramBot
   module Command
     #
     # <Description>
     #
     class Base
-      attr_reader :user, :message, :api
+      attr_reader :user, :message
+
+      TELEGRAM_API_URI = "https://api.telegram.org/bot#{ENV['TELEGRAM_BOT_TOKEN']}"
 
       def initialize(user, message)
         @user = user
         @message = message
-        token = ENV['TELEGRAM_API_TOKEN']
-        @api = ::Telegram::Bot::Api.new(token)
       end
 
       def should_start?
@@ -26,8 +26,12 @@ module TelegramBot
 
       protected
 
-      def send_message(text, _options = {})
-        @api.call('sendMessage', chat_id: @user.telegram_id, text: text)
+      def send_message(text)
+        uri = URI("#{TELEGRAM_API_URI}/sendMessage")
+        params = { chat_id: @user.telegram_id, text: text }
+        uri.query = URI.encode_www_form(params)
+
+        Net::HTTP.get(uri)
       end
 
       def text
