@@ -33,7 +33,7 @@ module TelegramBot
 
         Net::HTTP.get(uri)
       end
-
+      
       def text
         @message[:message][:text]
       end
