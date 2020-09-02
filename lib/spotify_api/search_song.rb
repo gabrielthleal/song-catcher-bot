@@ -10,18 +10,9 @@ module SpotifyApi
     end
 
     def find
-      params = { q: encoded_song, type: :track }
-      RestClient.get("#{SPOTIFY_API_URI}/search", params, auth_header)
-    end
-
-    private
-
-    def auth_header
-      { Authorization: "Bearer #{@spotify_user.access_token}" }
-    end
-
-    def encoded_song
-      URI.encode_www_form(@song_name)
+      params = { Authorization: "Bearer #{@spotify_user.access_token}", params: { q: @song_name, type: :track } }
+      
+      JSON.parse(RestClient.get("#{SPOTIFY_API_URI}/search", params))
     end
   end
 end

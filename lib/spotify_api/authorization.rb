@@ -32,27 +32,23 @@ module SpotifyApi
     end
 
     def token_response
-      params = { grant_type: 'authorization_code', code: @code, redirect_uri: REDIRECT_URI }
+      basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
 
-      encoded_params = URI.encode_www_form(params)
-      debugger
-      JSON.parse(RestClient.post(TOKEN_URI, encoded_params, auth_header))
+      params = {
+        grant_type: 'authorization_code',
+        code: @code,
+        redirect_uri: 'http://localhost:3000/auth/spotify/callback'
+      }
+
+      JSON.parse(RestClient.post(TOKEN_URI, params, { Authorization: "Basic #{basic_auth}" }))
     end
 
     def create_spotify_user
       tokens = token_response
 
-      spotify_user = SpotifyUser.find_or_initialize_by(user_id: user_id)
+      spotify_user = SpotifyUser.find_or_initialize_by(user_id: @user_id)
 
       spotify_user.update_attributes!(access_token: tokens['access_token'], refresh_token: tokens['refresh_token'])
-    end
-
-    private
-
-    def auth_header
-      my_token = Base64.strict_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
-
-      { Autorization: "Basic #{my_token}" }
     end
   end
 end

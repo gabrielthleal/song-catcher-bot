@@ -17,8 +17,8 @@ module TelegramBot
         return send_message('You have no authorization, please, type /authorize to get one') if spotify_user.nil?
 
         search = SpotifyApi::SearchSong.new(text, spotify_user).find
-
-        send_message(search)
+        
+        send_message(search['tracks']['items'][0]['external_urls']['spotify'])
       end
 
       def authorize?
