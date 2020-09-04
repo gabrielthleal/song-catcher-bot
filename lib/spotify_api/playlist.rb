@@ -15,51 +15,38 @@ module SpotifyApi
     end
 
     def playlist_id
+      path = "/users/#{@spotify_user.spotify_id}/playlists"
+
       params = {
         name: 'Telegram',
         description: 'All songs that you have added from telegram',
         public: true
-      }.to_json
+      }
 
-      begin 
-        playlist = RestClient.post("#{SPOTIFY_API_URI}/users/#{@spotify_user.spotify_id}/playlists", params, { Authorization: "Bearer #{@spotify_user.access_token}", 'Content-Type': 'application/json' })
-      rescue
-        return refresh_token
-      end
+      headers = { authorization: "Bearer #{@spotify_user.access_token}", content_type: 'application/json' }
 
-      JSON.parse(playlist)['id']
+      playlist = Request.new(:post, :spotify_api_uri, path, { params: params, headers: headers }).execute
+
+      playlist['id']
     end
 
     def add_item
-      url = URI("https://api.spotify.com/v1/playlists/#{@spotify_user.playlist_id}/tracks")
-
       params = { uris: @uri }
-      url.query = URI.encode_www_form(params)
+      headers = { authorization: "Bearer #{@spotify_user.access_token}" }
 
-      https = Net::HTTP.new(url.host, url.port)
-      https.use_ssl = true
-
-      request = Net::HTTP::Post.new(url)
-
-      request['Authorization'] = "Bearer #{@spotify_user.access_token}"
-
-      response = https.request(request)
-
-      return true if response.code == '201'
-
-      false
+      Request.new(:post, :spotify_api_uri, nil, { params: params, headers: headers }).execute
     end
 
     def refresh_token
       basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
       params = { grant_type: 'refresh_token', refresh_token: @spotify_user.refresh_token }
+      headers = { authorization: "Basic #{basic_auth}" }
 
-      response = RestClient.post(TOKEN_URI, params, { Authorization: "Basic #{basic_auth}" })
-      access_token = JSON.parse(response)['access_token']
+      response = Request.new(:post, :token_uri, nil, { params: params, headers: headers }).execute
 
-      @spotify_user.update!(access_token: access_token)
+      @spotify_user.update!(access_token: response['access_token'])
 
-      create
+      playlist_id
     end
   end
 end

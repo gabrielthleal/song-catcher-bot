@@ -34,7 +34,7 @@ module TelegramBot
                    text: text }
 
         params.merge!(reply_markup) if options[:with_markup]
-        
+
         RestClient.get("#{TELEGRAM_API_URI}/sendMessage", { params: params })
       end
 
