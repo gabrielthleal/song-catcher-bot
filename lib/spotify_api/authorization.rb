@@ -59,7 +59,7 @@ module SpotifyApi
     end
 
     def my_spotify_info
-      headers = { authorization: "Bearer #{token_response['access_token']}" }
+      headers = { authorization: "Bearer #{generate_token['access_token']}" }
 
       @my_spotify_info ||= Request.execute(:get, :spotify_api_uri, '/me', { headers: headers })
     end

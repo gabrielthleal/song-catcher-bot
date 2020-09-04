@@ -24,7 +24,7 @@ module TelegramBot
       def send_message(text, options = {})
         with_markup = options.fetch(:with_markup, false)
 
-        params = { chat_id: @user.telegram_id, text: text }
+        params = { chat_id: @user.telegram_id, text: text, parse_mode: 'Markdown' }
         headers = { content_type: 'application/json' }
 
         if with_markup
