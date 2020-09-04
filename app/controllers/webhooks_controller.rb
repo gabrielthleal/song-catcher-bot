@@ -1,6 +1,6 @@
 class WebhooksController < ApplicationController
   def callback
-    return TelegramBot::AnswerCallbackQuery.new(params[:callback_query]).process if callback_query?
+    return callback_query.send(params[:callback_query]) if callback_query?
 
     dispatcher.new(webhook, user).process
 
@@ -9,16 +9,20 @@ class WebhooksController < ApplicationController
 
   private
 
-  def callback_query?
-    params[:callback_query].present?
-  end
-
   def webhook
     params[:webhook]
   end
 
   def dispatcher
     TelegramBot::MessageDispatcher
+  end
+  
+  def callback_query?
+    params[:callback_query].present?
+  end
+
+  def callback_query
+    TelegramBot::AnswerCallbackQuery
   end
 
   def from

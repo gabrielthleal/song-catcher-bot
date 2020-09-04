@@ -20,13 +20,13 @@ module TelegramBot
       end
 
       def autorization_link
-        SpotifyApi::Authorization.autorization_link(user.id)
+        SpotifyApi::Authorization.generate_link(user.id)
       end
 
       def track
-        search = SpotifyApi::SearchSong.new(text, spotify_user).find
+        @track ||= SpotifyApi::Search.track(text, spotify_user)
 
-        search['tracks']['items'][0]
+        @track['tracks']['items'][0]
       end
 
       private

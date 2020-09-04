@@ -1,20 +1,21 @@
 #
 # <Description>
 #
-module SpotifyApi
+module SpotifyApi 
   #
   # <Description>
   #
   class Authorization
     REDIRECT_URI = 'http://localhost:3000/auth/spotify/callback'.freeze
     AUTHORIZATION_URI = 'https://accounts.spotify.com/authorize'.freeze
+    BASIC_AUTH = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}").freeze
 
     def initialize(code, user_id)
       @code = code
       @user_id = user_id
     end
 
-    def self.autorization_link(user_id)
+    def self.generate_link(user_id)
       uri = URI(AUTHORIZATION_URI)
 
       params = {
@@ -30,28 +31,25 @@ module SpotifyApi
       uri
     end
 
-    def token_response
-      basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
-
+    def generate_token
       params = {
         grant_type: 'authorization_code',
         code: @code,
         redirect_uri: 'http://localhost:3000/auth/spotify/callback'
       }
+      headers = { authorization: "Basic #{BASIC_AUTH}" }
 
-      headers = { authorization: "Basic #{basic_auth}" }
-
-      @token_response ||= Request.new(:post, :token_uri, nil, { params: params, headers: headers }).execute
+      @generate_token ||= Request.execute(:post, :token_uri, nil, { params: params, headers: headers })
     end
 
-    def create_spotify_user
+    def create_user
       spotify_id = my_spotify_info['id']
 
-      spotify_user.update!(access_token: token_response['access_token'],
-                           refresh_token: token_response['refresh_token'],
+      spotify_user.update!(access_token: generate_token['access_token'],
+                           refresh_token: generate_token['refresh_token'],
                            spotify_id: spotify_id)
 
-      create_playlist if spotify_user.playlist_id.nil?
+      generate_playlist if spotify_user.playlist_id.nil?
     end
 
     private
@@ -63,13 +61,13 @@ module SpotifyApi
     def my_spotify_info
       headers = { authorization: "Bearer #{token_response['access_token']}" }
 
-      @my_spotify_info ||= Request.new(:get, :spotify_api_uri, '/me', { headers: headers }).execute
+      @my_spotify_info ||= Request.execute(:get, :spotify_api_uri, '/me', { headers: headers })
     end
 
-    def create_playlist
-      playlist_id = SpotifyApi::Playlist.new(spotify_user).playlist_id
+    def generate_playlist
+      playlist = Playlist.new(spotify_user).create
 
-      spotify_user.update!(playlist_id: playlist_id)
+      spotify_user.update!(playlist_id: playlist['id'])
     end
   end
 end

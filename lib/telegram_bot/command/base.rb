@@ -1,12 +1,9 @@
 # frozen_String_literal: true
 
-require 'net/http'
 module TelegramBot
   module Command
-    #
-    # <Description>
-    #
     class Base
+
       attr_reader :user, :message
 
       def initialize(user, message)
@@ -35,7 +32,7 @@ module TelegramBot
           params.merge!(reply_markup)
         end
 
-        Request.new(:get, :telegram_api_uri, '/sendMessage', { params: params, headers: headers }).execute
+        Request.execute(:get, :telegram_api_uri, '/sendMessage', { params: params, headers: headers })
       end
 
       def reply_keyboard_markup(buttons)

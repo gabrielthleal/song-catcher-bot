@@ -5,16 +5,13 @@ module SpotifyApi
   #
   # <Description>
   #
-  class Playlist 
-    SPOTIFY_API_URI = 'https://api.spotify.com/v1'.freeze
-    TOKEN_URI = 'https://accounts.spotify.com/api/token'.freeze
-
+  class Playlist
     def initialize(spotify_user, uri = nil)
       @spotify_user = spotify_user
       @uri = uri
     end
 
-    def playlist_id
+    def create
       path = "/users/#{@spotify_user.spotify_id}/playlists"
 
       params = {
@@ -25,9 +22,7 @@ module SpotifyApi
 
       headers = { authorization: "Bearer #{@spotify_user.access_token}", content_type: 'application/json' }
 
-      playlist = Request.new(:post, :spotify_api_uri, path, { params: params, headers: headers }).execute
-
-      playlist['id']
+      @create ||= Request.execute(:post, :spotify_api_uri, path, { params: params, headers: headers })
     end
 
     def add_item
@@ -35,19 +30,20 @@ module SpotifyApi
       headers = { authorization: "Bearer #{@spotify_user.access_token}", content_type: 'application/json' }
       path = "/playlists/#{@spotify_user.playlist_id}/tracks"
 
-      Request.new(:post, :spotify_api_uri, path, { params: params, headers: headers }).execute
+      response ||= Request.execute(:post, :spotify_api_uri, path, { params: params, headers: headers })
+
+      return refresh_token if response.dig('error', 'status') == 401
+
+      response
     end
 
     def refresh_token
-      basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
       params = { grant_type: 'refresh_token', refresh_token: @spotify_user.refresh_token }
-      headers = { authorization: "Basic #{basic_auth}" }
+      headers = { authorization: "Basic #{BASIC_AUTH}" }
 
-      response = Request.new(:post, :token_uri, nil, { params: params, headers: headers }).execute
+      response ||= Request.execute(:post, :token_uri, nil, { params: params, headers: headers })
 
       @spotify_user.update!(access_token: response['access_token'])
-
-      playlist_id
     end
   end
 end
