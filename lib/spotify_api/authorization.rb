@@ -9,6 +9,7 @@ module SpotifyApi
     TOKEN_URI = 'https://accounts.spotify.com/api/token'.freeze
     REDIRECT_URI = 'http://localhost:3000/auth/spotify/callback'.freeze
     AUTHORIZATION_URI = 'https://accounts.spotify.com/authorize'.freeze
+    SPOTIFY_API_URI = 'https://api.spotify.com/v1'.freeze
 
     def initialize(code, user_id)
       @code = code
@@ -33,6 +34,7 @@ module SpotifyApi
 
     def token_response
       basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
+      url = URI(TOKEN_URI)
 
       params = {
         grant_type: 'authorization_code',
@@ -40,15 +42,43 @@ module SpotifyApi
         redirect_uri: 'http://localhost:3000/auth/spotify/callback'
       }
 
-      JSON.parse(RestClient.post(TOKEN_URI, params, { Authorization: "Basic #{basic_auth}" }))
+      url.query = URI.encode_www_form(params)
+
+      https = Net::HTTP.new(url.host, url.port)
+      https.use_ssl = true
+
+      request = Net::HTTP::Post.new(url)
+
+      request['Authorization'] = "Basic #{basic_auth}"
+
+      https.request(request)
     end
 
     def create_spotify_user
-      tokens = token_response
+      spotify_id = JSON.parse(my_spotify_info)['id']
 
-      spotify_user = SpotifyUser.find_or_initialize_by(user_id: @user_id)
+      spotify_user.update!(access_token: token_response['access_token'],
+                           refresh_token: token_response['refresh_token'],
+                           spotify_id: spotify_id)
 
-      spotify_user.update_attributes!(access_token: tokens['access_token'], refresh_token: tokens['refresh_token'])
+      create_playlist if spotify_user.playlist_id.nil?
+    end
+
+    private
+
+    def spotify_user
+      @spotify_user ||= SpotifyUser.find_or_initialize_by(user_id: @user_id)
+    end
+
+    def my_spotify_info
+      debugger
+      @my_spotify_info ||= RestClient.get("#{SPOTIFY_API_URI}/me", { Authorization: "Bearer #{token_response['access_token']}" })
+    end
+
+    def create_playlist
+      playlist_id = SpotifyApi::Playlist.new(spotify_user).playlist_id
+
+      spotify_user.update!(playlist_id: playlist_id)
     end
   end
 end
