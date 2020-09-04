@@ -2,9 +2,10 @@ class Request
   ENDPOINTS = {
     token_uri: 'https://accounts.spotify.com/api/token',
     authorization_uri: 'https://accounts.spotify.com/authorize',
-    spotify_api_uri: 'https://api.spotify.com/v1'
+    spotify_api_uri: 'https://api.spotify.com/v1',
+    telegram_api_uri: "https://api.telegram.org/bot#{ENV['TELEGRAM_BOT_TOKEN']}"
   }.freeze
-
+ 
   #
   # <Description>
   #
@@ -32,11 +33,11 @@ class Request
     https.use_ssl = true
 
     request = request_class.new(url)
-    request['Authorization'] = @headers[:authorization]
+    request['Authorization'] = @headers[:authorization] if @headers
 
     if @headers[:content_type].present?
       request['Content-Type'] = @headers[:content_type]
-      request.body = @params.to_json 
+      request.body = @params.to_json
     end
 
     response = https.request(request)

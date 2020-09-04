@@ -32,9 +32,10 @@ module SpotifyApi
 
     def add_item
       params = { uris: @uri }
-      headers = { authorization: "Bearer #{@spotify_user.access_token}" }
+      headers = { authorization: "Bearer #{@spotify_user.access_token}", content_type: 'application/json' }
+      path = "/playlists/#{@spotify_user.playlist_id}/tracks"
 
-      Request.new(:post, :spotify_api_uri, nil, { params: params, headers: headers }).execute
+      Request.new(:post, :spotify_api_uri, path, { params: params, headers: headers }).execute
     end
 
     def refresh_token
