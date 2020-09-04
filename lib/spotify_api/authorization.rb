@@ -6,7 +6,6 @@ module SpotifyApi
   # <Description>
   #
   class Authorization
-    TOKEN_URI = 'https://accounts.spotify.com/api/token'.freeze
     REDIRECT_URI = 'http://localhost:3000/auth/spotify/callback'.freeze
     AUTHORIZATION_URI = 'https://accounts.spotify.com/authorize'.freeze
 
@@ -40,15 +39,37 @@ module SpotifyApi
         redirect_uri: 'http://localhost:3000/auth/spotify/callback'
       }
 
-      JSON.parse(RestClient.post(TOKEN_URI, params, { Authorization: "Basic #{basic_auth}" }))
+      headers = { authorization: "Basic #{basic_auth}" }
+
+      @token_response ||= Request.new(:post, :token_uri, nil, { params: params, headers: headers }).execute
     end
 
     def create_spotify_user
-      tokens = token_response
+      spotify_id = my_spotify_info['id']
 
-      spotify_user = SpotifyUser.find_or_initialize_by(user_id: @user_id)
+      spotify_user.update!(access_token: token_response['access_token'],
+                           refresh_token: token_response['refresh_token'],
+                           spotify_id: spotify_id)
 
-      spotify_user.update_attributes!(access_token: tokens['access_token'], refresh_token: tokens['refresh_token'])
+      create_playlist if spotify_user.playlist_id.nil?
+    end
+
+    private
+
+    def spotify_user
+      @spotify_user ||= SpotifyUser.find_or_initialize_by(user_id: @user_id)
+    end
+
+    def my_spotify_info
+      headers = { authorization: "Bearer #{token_response['access_token']}" }
+
+      @my_spotify_info ||= Request.new(:get, :spotify_api_uri, '/me', { headers: headers }).execute
+    end
+
+    def create_playlist
+      playlist_id = SpotifyApi::Playlist.new(spotify_user).playlist_id
+
+      spotify_user.update!(playlist_id: playlist_id)
     end
   end
 end
