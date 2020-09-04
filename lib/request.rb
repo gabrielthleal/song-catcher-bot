@@ -1,3 +1,5 @@
+require 'net/http'
+
 class Request 
   ENDPOINTS = {
     token_uri: 'https://accounts.spotify.com/api/token',
@@ -5,7 +7,13 @@ class Request
     spotify_api_uri: 'https://api.spotify.com/v1',
     telegram_api_uri: "https://api.telegram.org/bot#{ENV['TELEGRAM_BOT_TOKEN']}"
   }.freeze
- 
+
+  private_class_method :new
+
+  def self.execute(method, endpoint, path, options)
+    new(method, endpoint, path, options).connection
+  end
+
   #
   # <Description>
   #
@@ -24,7 +32,7 @@ class Request
     @headers = options[:headers]
   end
 
-  def execute
+  def connection
     url = URI("#{@endpoint}#{@path}")
 
     url.query = URI.encode_www_form(@params) if @params.present?

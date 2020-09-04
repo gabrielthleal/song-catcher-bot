@@ -10,7 +10,7 @@ module TelegramBot
       end
 
       def start
-        send_message('Welcome! Send me a song name!')
+        send_message("*Welcome!!*\nThis bot is to search for some songs by name. We'll create a playlist on your _Spotify_ called _Telegram_, you'll find all songs that were added here.\n Go ahead and try to search something.")
 
         user.reset_next_bot_command
 
