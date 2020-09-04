@@ -1,7 +1,7 @@
-# README
+# Telegram bot
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+- I'm building a telegram bot that searches a song and add to a spotify's playlist
+- More documentation soon...
 
 Things you may want to cover:
 
