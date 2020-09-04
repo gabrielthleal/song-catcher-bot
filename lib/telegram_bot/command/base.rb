@@ -9,8 +9,6 @@ module TelegramBot
     class Base
       attr_reader :user, :message
 
-      TELEGRAM_API_URI = "https://api.telegram.org/bot#{ENV['TELEGRAM_BOT_TOKEN']}"
-
       def initialize(user, message)
         @user = user
         @message = message
@@ -27,23 +25,21 @@ module TelegramBot
       protected
 
       def send_message(text, options = {})
-        reply_markup = { reply_markup: reply_keyboard_markup(options[:callback_data]) }
-        options.fetch(:with_markup, false)
+        with_markup = options.fetch(:with_markup, false)
 
-        params = { chat_id: @user.telegram_id,
-                   text: text }
+        params = { chat_id: @user.telegram_id, text: text }
+        headers = { content_type: 'application/json' }
 
-        params.merge!(reply_markup) if options[:with_markup]
+        if with_markup
+          reply_markup = { reply_markup: reply_keyboard_markup(options[:inline_keyboard]) }
+          params.merge!(reply_markup)
+        end
 
-        RestClient.get("#{TELEGRAM_API_URI}/sendMessage", { params: params })
+        Request.new(:get, :telegram_api_uri, '/sendMessage', { params: params, headers: headers }).execute
       end
 
-      def reply_keyboard_markup(data)
-        {
-          inline_keyboard: [[
-            { text: 'add', callback_data: data }
-          ]]
-        }.to_json
+      def reply_keyboard_markup(buttons)
+        { inline_keyboard: [[buttons]] }.to_json
       end
 
       def text

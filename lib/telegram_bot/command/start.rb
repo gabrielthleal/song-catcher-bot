@@ -10,8 +10,7 @@ module TelegramBot
       end
 
       def start
-        send_message("Welcome! Send me any song name to add on your spotify playlist \n 
-          send /authorize")
+        send_message('Welcome! Send me a song name!')
 
         user.reset_next_bot_command
 

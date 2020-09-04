@@ -9,27 +9,22 @@ module SpotifyApi
     end
 
     def find
-      params = { Authorization: "Bearer #{@spotify_user.access_token}", params: { q: @song_name, type: :track } }
+      params = {  q: @song_name, type: :track }
+      headers = { authorization: "Bearer #{@spotify_user.access_token}" }
 
-      begin
-        response = RestClient.get("#{SPOTIFY_API_URI}/search", params)
-      rescue
-        return refresh_token
-      end
-
-      JSON.parse(response.body)
+      Request.new(:get, :spotify_api_uri, '/search', { params: params, headers: headers }).execute
     end
 
-    def refresh_token
-      basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
-      params = { grant_type: 'refresh_token', refresh_token: @spotify_user.refresh_token }
+    # def refresh_token
+    #   basic_auth = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}")
+    #   params = { grant_type: 'refresh_token', refresh_token: @spotify_user.refresh_token }
 
-      response = RestClient.post(TOKEN_URI, params, { Authorization: "Basic #{basic_auth}" })
-      access_token = JSON.parse(response)['access_token']
+    #   response = RestClient.post(TOKEN_URI, params, { Authorization: "Basic #{basic_auth}" })
+    #   access_token = JSON.parse(response)['access_token']
 
-      @spotify_user.update!(access_token: access_token)
+    #   @spotify_user.update!(access_token: access_token)
 
-      find
-    end
+    #   find
+    # end
   end
 end
