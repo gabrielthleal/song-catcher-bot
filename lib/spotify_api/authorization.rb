@@ -6,7 +6,7 @@ module SpotifyApi
   # <Description>
   #
   class Authorization
-    REDIRECT_URI = 'http://localhost:3000/auth/spotify/callback'.freeze
+    REDIRECT_URI = 'https://songcatcherbot.herokuapp.com/spotify/callback'.freeze
     AUTHORIZATION_URI = 'https://accounts.spotify.com/authorize'.freeze
     BASIC_AUTH = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}").freeze
 
@@ -35,7 +35,7 @@ module SpotifyApi
       params = {
         grant_type: 'authorization_code',
         code: @code,
-        redirect_uri: 'http://localhost:3000/auth/spotify/callback'
+        redirect_uri: 'https://songcatcherbot.herokuapp.com/spotify/callback'
       }
       headers = { authorization: "Basic #{BASIC_AUTH}" }
 
