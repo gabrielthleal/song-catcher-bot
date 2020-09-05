@@ -30,4 +30,20 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  telegram: 
+    welcome: >- 
+                *Welcome!!* This bot is to search for some songs by name. 
+                We'll create a playlist on your _Spotify_ called _Telegram_, 
+                you'll find all songs that were added here. Go ahead and try to search something.
+
+    searching: '🤖🔎 _Searching..._'
+    authorization: >- 
+                     Seems to be your first time here. You'll need authorization from Spotify. 
+                     Click on the below link to get one.
+    authorization_btn: "Authorization"                
+    authorized: "*Alright!* Now just tell the song name that you'd like to add to your Telegram playlist."                
+    not_found: "Make sure that the song name is correct and try again"
+    add_song: "Do you want to add this song?"
+    add_song_btn: "*Add to Spotify playlist*"               
+  
+
