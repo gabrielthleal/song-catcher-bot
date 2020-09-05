@@ -10,7 +10,7 @@ module TelegramBot
       end
 
       def start
-        return user.next_bot_command = 'TelegramBot::Command::Start' if start_again?
+        return send_message('Bem vindo de volta! Basta enviar o nome de uma música.') if start_again?
 
         return send_message(I18n.t('telegram.authorized')) if should_search?
 
