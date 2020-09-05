@@ -1,0 +1,25 @@
+pt-br:
+  telegram:
+    welcome: >-
+              *Olá!!* Use usar este bot para encontrar músicas no Spotify. 
+              Nós vamos criar uma playlist no _Spotify_ com o nome de _Telegram_,
+              Lá você vai encontrar todas as músicas que você adicionou aqui.
+              Por que não tenta encontrar algo agora?
+
+    searching: '🤖🔎 _Procurando..._'
+    authorization: >-
+                    Parece ser a sua primeira vez aqui.
+                    Você vai precisar conectar o bot com sua conta do Spotify.
+                    Para fazer isso é simple, só clicar no botão abaixo.
+
+    authorization_btn: 'Autorizar Bot'   
+
+    authorized: >-
+                *Tudo certo!* Agora você consegue procurar e adiconar as músicas.
+                  Dica: Tenta pesquisar o nome dá música junto da banda/artista. 
+                  Depois é só clicar no botão Adicionar à Playlist e aproveitar!
+
+    not_found: 'Música não encontrata. Você tem certeza que digitou corretamente?' 
+    add_song: 'Você quer acicionar essa música a sua Playlist?'
+    add_song_btn: 'Adicionar à Playlist'               
+  

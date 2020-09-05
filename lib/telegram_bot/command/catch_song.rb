@@ -10,15 +10,15 @@ module TelegramBot
       end
 
       def start
-        return send_message('*Alright! Now you can search.*') if can_search?
+        return send_message(I18n.t('telegram.authorized')) if can_search?
 
-        return send_message("Seems to be your first time here.\nYou'll need authorization from Spotify.\nClick on the below link to get one.", { with_markup: true, inline_keyboard: { text: 'Authorization', url: autorization_link } }) if spotify_user.nil?
+        return send_message(I18n.t('telegram.authorization'), { with_markup: true, inline_keyboard: { text: I18n.t('telegram.authorization_btn'), url: autorization_link } }) if spotify_user.nil?
 
-        send_message('🤖🔎 _Searching..._')
+        send_message(I18n.t('telegram.searching'))
 
-        return send_message('Make sure that the song name is correct and try again') if track.nil?
+        return send_message(I18n.t('telegram.not_found')) if track.nil?
 
-        send_message("Do you want to add this song?\n#{track['external_urls']['spotify']}", { with_markup: true, inline_keyboard: { text: 'add', callback_data: track['uri'] } })
+        send_message("#{I18n.t('telegram.add_song')}#{track['external_urls']['spotify']}", { with_markup: true, inline_keyboard: { text: I18n.t('telegram.add_song_btn'), callback_data: track['uri'] } })
       end
 
       def autorization_link
