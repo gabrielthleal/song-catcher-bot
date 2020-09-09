@@ -28,8 +28,8 @@ class Request
     @method = method.to_s.capitalize
     @endpoint = ENDPOINTS[endpoint.to_sym]
     @path = path
-    @params = options[:params]
-    @headers = options[:headers]
+    @params = options.fetch(:params, nil)
+    @headers = options.fetch(:headers, nil)
   end
 
   def connection
@@ -41,11 +41,14 @@ class Request
     https.use_ssl = true
 
     request = request_class.new(url)
-    request['Authorization'] = @headers[:authorization] if @headers
 
-    if @headers[:content_type].present?
-      request['Content-Type'] = @headers[:content_type]
-      request.body = @params.to_json
+    if @headers
+      request['Authorization'] = @headers[:authorization]
+
+      if @headers[:content_type].present?
+        request['Content-Type'] = @headers[:content_type]
+        request.body = @params.to_json
+      end
     end
 
     response = https.request(request)
