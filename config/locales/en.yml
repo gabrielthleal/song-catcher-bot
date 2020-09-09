@@ -31,19 +31,25 @@
 
 en:
   telegram: 
-    welcome: >- 
-                *Welcome!!* This bot is to search for some songs by name. 
-                We'll create a playlist on your _Spotify_ called _Telegram_, 
-                you'll find all songs that were added here. Go ahead and try to search something.
-
-    searching: '🤖🔎 _Searching..._'
-    authorization: >- 
-                     Seems to be your first time here. You'll need authorization from Spotify. 
-                     Click on the below link to get one.
-    authorization_btn: "Authorization"                
-    authorized: "*Alright!* Now just tell the song name that you'd like to add to your Telegram playlist."                
-    not_found: "Make sure that the song name is correct and try again"
+    welcome: "*Welcome!!*\nFind your Spotify songs from here. 
+              We'll create a playlist on your *Spotify* called *Telegram* where
+              you'll find all songs that were added here.
+              *Commands and Buttons:* \nTap to *Authorizate* button to be able to find and add songs to your playlist.
+              \nTap to *Language* to change the bot language.
+              \nTap to *Menu* button or just send *menu* as message to get back to *menu*.
+              "
+    authorization: "If is your first time here, you'll need to authorize the bot with your 
+                    Spotify account to enable search button. Click on the below link.
+                    "
+    authorization_btn: "Authorize"  
+    search_song_btn: 'Search 🔎'
+    language_txt: 'Which language do you want to the bot? Choose one below'  
+    language_btn: 'Language'
+    language_answer: 'Alterado!'        
+    not_found: "Not found. Make sure that the song name is correct and try again"
     add_song: "Do you want to add this song?"
-    add_song_btn: "*Add to Spotify playlist*"               
+    add_song_btn: "Add to Spotify"    
+    callback_answer: 'Successyfully added'
+    can_search: '✅ *You can search already* ✅'           
   
 
