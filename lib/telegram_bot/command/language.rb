@@ -6,7 +6,7 @@ module TelegramBot
       end
 
       def start
-        case text.downcase
+        case text
         when /language/
           delete_message
           send_message(I18n.t('telegram.language_txt'), languages)
@@ -15,7 +15,7 @@ module TelegramBot
           user.update!(language: text)
           answer_callback_query(message[:callback_query], I18n.t('telegram.language_answer'))
 
-        when /menu|Menu/
+        when /Menu|menu/
           delete_message
           user.next_bot_command = 'TelegramBot::Command::Start'
           Start.new(user, message).start

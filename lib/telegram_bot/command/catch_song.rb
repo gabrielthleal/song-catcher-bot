@@ -10,8 +10,8 @@ module TelegramBot
       end
 
       def start
-        case text.downcase
-        when /menu|Menu/
+        case text
+        when /Menu|menu/
           user.next_bot_command = 'TelegramBot::Command::Start'
           Start.new(user, message).start
 
