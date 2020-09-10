@@ -11,7 +11,7 @@ module TelegramBot
           delete_message
           send_message(I18n.t('telegram.language_txt'), languages)
 
-        when /^(pt-br|en)$/
+        when /^(pt|en)$/
           user.update!(language: text)
           answer_callback_query(message[:callback_query], I18n.t('telegram.language_answer'))
 
@@ -31,7 +31,7 @@ module TelegramBot
           [
             {
               text: 'BR 🇧🇷',
-              callback_data: 'pt-br'
+              callback_data: 'pt'
             },
             {
               text: 'EN 🇺🇸',
