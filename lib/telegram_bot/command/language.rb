@@ -15,7 +15,7 @@ module TelegramBot
           user.update!(language: text)
           answer_callback_query(message[:callback_query], I18n.t('telegram.language_answer'))
 
-        when /menu/
+        when /menu|Menu/
           delete_message
           user.next_bot_command = 'TelegramBot::Command::Start'
           Start.new(user, message).start

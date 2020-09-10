@@ -10,7 +10,7 @@ module TelegramBot
 
         if text.match?(/authorize/)
           send_message(I18n.t('telegram.authorization'), authorization)
-        elsif text.match?(/menu/)
+        elsif text.match?(/menu|Menu/)
           Start.new(user, message).start
         end
 
