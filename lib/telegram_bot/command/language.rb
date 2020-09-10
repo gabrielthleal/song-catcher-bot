@@ -6,7 +6,7 @@ module TelegramBot
       end
 
       def start
-        case text
+        case text.downcase
         when /language/
           delete_message
           send_message(I18n.t('telegram.language_txt'), languages)
