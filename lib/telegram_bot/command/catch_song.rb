@@ -10,59 +10,44 @@ module TelegramBot
       end
 
       def start
-        return user.next_bot_command = 'TelegramBot::Command::Start' if start_again?
+        case text
+        when /Menu|menu/
+          user.next_bot_command = 'TelegramBot::Command::Start'
+          Start.new(user, message).start
 
-        return send_message(I18n.t('telegram.authorized')) if should_search?
+        when /spotify:track/
+          SpotifyApi::Playlist.new(spotify_user, text).add_item
 
-        return send_message(I18n.t('telegram.authorization'), authorization) if spotify_user.nil?
+          answer_callback_query(message[:callback_query], I18n.t('telegram.callback_answer'))
+        else
+          return send_message(I18n.t('telegram.not_found')) if track.nil?
 
-        send_message(I18n.t('telegram.searching'))
-
-        return send_message(I18n.t('telegram.not_found')) if track.nil?
-
-        send_message("#{I18n.t('telegram.add_song')}#{track['external_urls']['spotify']}", add_song_btn)
-      end
-
-      def authorization
-        {
-          with_markup: true, inline_keyboard:
-          {
-            text: I18n.t('telegram.authorization_btn'),
-            url: SpotifyApi::Authorization.generate_link(user.id)
-          }
-        }
+          # TODO: to add nedd auth
+          send_message("#{I18n.t('telegram.add_song')}#{track['external_urls']['spotify']}", add_song_btn)
+        end
       end
 
       def add_song_btn
         {
-          with_markup: true, inline_keyboard:
-          {
-            text: I18n.t('telegram.add_song_btn'),
-            callback_data: track['uri']
-          }
+          with_markup: true,
+          inline_keyboard:
+          [
+            {
+              text: I18n.t('telegram.add_song_btn'),
+              callback_data: track['uri']
+            },
+            {
+              text: '<< Menu',
+              callback_data: 'menu'
+            }
+          ]
         }
-      end
-
-      def should_search?
-        secret_code = Base64.urlsafe_encode64('potato123')
-
-        text.include?(secret_code)
-      end
-
-      def start_again?
-        text.match?(%r{\A/start})
       end
 
       def track
         @track ||= SpotifyApi::Search.track(text, spotify_user)
 
         @track['tracks']['items'][0]
-      end
-
-      private
-
-      def spotify_user
-        user.spotify_user
       end
     end
   end

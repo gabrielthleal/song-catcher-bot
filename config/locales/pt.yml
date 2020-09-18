@@ -1,0 +1,23 @@
+pt:
+  telegram:
+    welcome: "*Olá!!*\nEncontre músicas do Spotify por aqui. 
+              Nós vamos criar uma playlist no *Spotify* com o nome de *Telegram*,
+              Lá você vai encontrar todas as músicas que você adicionou aqui.
+              \n*Comandos e botões:* Toque em *Idioma* e selecione qual idioma você quer que o bot esteja.
+              \nToque em *Autorizar* e vai poder pesquisar e adicionar múscias a sua playlist
+              \nToque em *Menu* ou simplesmente envie *menu* no chat para voltar ao menu.
+              "
+    authorization: "Se é a sua primeira vez aqui, você vai precisar conectar o bot com sua conta do Spotify
+                    \nPara habilitar o botão de pesquisa.\nPara fazer isso é simples! Só clicar no botão abaixo
+                    "
+    authorization_btn: 'Autorizar'  
+    search_song_btn: 'Pesquisar 🔎' 
+    language_txt: 'Qual idioma você deseja para o bot? Escolha uma abaixo'
+    language_btn: 'Idioma'
+    language_answer: 'Changed!'       
+    not_found: 'Música não encontrata. Você tem certeza que digitou corretamente?' 
+    add_song: 'Você quer adicionar essa música a sua Playlist?'
+    add_song_btn: 'Adicionar no Spotify'   
+    callback_answer: 'Adicionado com sucesso'
+    can_search: '✅ *Você já pode pesquisar* ✅'               
+  

@@ -6,6 +6,8 @@ module SpotifyApi
   # <Description>
   #
   class Playlist
+    BASIC_AUTH = Base64.urlsafe_encode64("#{ENV['SPOTIFY_CLIENT_ID']}:#{ENV['SPOTIFY_CLIENT_SECRET']}").freeze
+
     def initialize(spotify_user, uri = nil)
       @spotify_user = spotify_user
       @uri = uri

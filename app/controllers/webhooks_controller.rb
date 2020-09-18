@@ -1,6 +1,6 @@
 class WebhooksController < ApplicationController
   def callback
-    return callback_query.send(params[:callback_query]) if callback_query?
+    I18n.locale = user.language
 
     dispatcher.new(webhook, user).process
 
@@ -13,19 +13,17 @@ class WebhooksController < ApplicationController
     params[:webhook]
   end
 
+  def callback_query
+    webhook[:callback_query]
+  end
+
   def dispatcher
     TelegramBot::MessageDispatcher
   end
-  
-  def callback_query?
-    params[:callback_query].present?
-  end
-
-  def callback_query
-    TelegramBot::AnswerCallbackQuery
-  end
 
   def from
+    return callback_query[:from] if callback_query.present?
+
     webhook[:message][:from]
   end
 
