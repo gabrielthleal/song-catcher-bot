@@ -1,6 +1,6 @@
 # Telegram bot
 
-- I'm building a telegram bot that searches a song and add to a spotify's playlist (It workds already)
+- I'm building a telegram bot that searches a song and add to a spotify's playlist (It works already)
 - More documentation soon...
 
 Things you may want to cover:
